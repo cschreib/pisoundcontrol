@@ -1,14 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">PiSoundControl</string>
-    <string name="edit_ip_prompt">Enter IP address (:port)</string>
     <string name="button_ip_connect">Connect</string>
     <string name="connection_status">Connection status</string>
-    <string name="connection_status_disconnected">Disconnected</string>
-    <string name="connection_status_connecting">Connecting…</string>
     <string name="connection_status_connected">Connected</string>
+    <string name="connection_status_connecting">Connecting…</string>
+    <string name="connection_status_disconnected">Disconnected</string>
     <string name="connection_status_host">Host name: %1$s</string>
     <string name="connection_status_ip">IP address: %1$s</string>
     <string name="connection_status_port">Port: %1$d</string>
     <string name="connection_status_version">Host version: %1$s</string>
+    <string name="edit_ip_prompt">Enter IP address (:port)</string>
     <string name="edit_ip_wrong_format">The IP address must be of the form \"x.y.z.w\", where each part is a number from 0 to 255.</string>
 </resources>
