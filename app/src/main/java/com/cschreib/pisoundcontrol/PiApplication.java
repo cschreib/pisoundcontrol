@@ -2,19 +2,17 @@ package com.cschreib.pisoundcontrol;
 
 import android.app.Application;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.esotericsoftware.kryonet.Client;
-
-import java.io.IOException;
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketException;
+import de.tavendo.autobahn.WebSocketHandler;
 
 public class PiApplication extends Application {
+    private final WebSocketConnection connection = new WebSocketConnection();
     Status currentStatus;
-    Client client;
 
     String serverIP;
-
     String serverName;
     String serverVersion;
     int    serverPort;
@@ -39,8 +37,8 @@ public class PiApplication extends Application {
             connectActivity.setStatus(currentStatus);
 
             if (status == Status.CONNECTED) {
-                Intent intent = new Intent(this, PickSourceActivity.class);
-                startActivity(intent);
+                Intent intent = new Intent(connectActivity, PickSourceActivity.class);
+                connectActivity.startActivity(intent);
             }
         }
     }
@@ -49,7 +47,9 @@ public class PiApplication extends Application {
         return currentStatus;
     }
 
-    public String getServerIP() { return serverIP; }
+    public String getServerIP() {
+        return serverIP;
+    }
 
     public String getServerName() {
         return serverName;
@@ -67,65 +67,44 @@ public class PiApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        client = new Client();
-        client.start();
-
         currentStatus = Status.DISCONNECTED;
-    }
-
-    private class ConnectTask extends AsyncTask<String, Void, Void> {
-        PiApplication app;
-        String message;
-
-        ConnectTask(PiApplication a) {
-            message = null;
-            app = a;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            app.setStatus(PiApplication.Status.CONNECTING);
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            String serverIP = params[0];
-            int    serverPort = Integer.parseInt(params[1]);
-
-            try {
-                // Connecting
-                client.connect(5000, serverIP, serverPort);
-                message = null;
-            } catch (IOException ex) {
-                // Connection failed
-                message = ex.getLocalizedMessage();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void v) {
-            super.onPostExecute(v);
-            if (client.isConnected()) {
-                app.setStatus(PiApplication.Status.CONNECTED);
-            } else {
-                app.setStatus(PiApplication.Status.DISCONNECTED);
-                if (message != null) {
-                    Toast toast = Toast.makeText(
-                        getApplicationContext(), message, Toast.LENGTH_LONG
-                    );
-                    toast.show();
-                }
-            }
-        }
     }
 
     public void connectToServer(String ip, int port) {
         serverIP = ip;
         serverPort = port;
+        String uri = "ws://"+ip+":"+Integer.toString(port);
 
-        new ConnectTask(this).execute(ip, Integer.toString(port));
+        try {
+            connection.connect(uri, new WebSocketHandler() {
+                @Override
+                public void onOpen() {
+                    setStatus(PiApplication.Status.CONNECTED);
+                }
+
+                @Override
+                public void onTextMessage(String payload) {
+                    Toast toast = Toast.makeText(
+                        getApplicationContext(), payload, Toast.LENGTH_LONG
+                    );
+                    toast.show();
+                }
+
+                @Override
+                public void onClose(int code, String reason) {
+                    setStatus(PiApplication.Status.DISCONNECTED);
+                }
+            });
+        } catch (WebSocketException e) {
+            setStatus(PiApplication.Status.DISCONNECTED);
+            Toast toast = Toast.makeText(
+                getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG
+            );
+            toast.show();
+        }
+    }
+
+    public void disconnectFromServer() {
+        connection.disconnect();
     }
 }

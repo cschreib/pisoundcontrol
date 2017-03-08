@@ -40,6 +40,12 @@ public class ConnectActivity extends AppCompatActivity {
         case DISCONNECTED:
             editText.setActivated(true);
             buttonConnect.setActivated(true);
+            buttonConnect.setText(getString(R.string.button_ip_connect));
+            buttonConnect.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    ConnectActivity.this.connect();
+                }
+            });
             progressBar.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.INVISIBLE);
@@ -61,6 +67,12 @@ public class ConnectActivity extends AppCompatActivity {
 
             editText.setActivated(true);
             buttonConnect.setActivated(true);
+            buttonConnect.setText(getString(R.string.button_ip_disconnect));
+            buttonConnect.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    ConnectActivity.this.disconnect();
+                }
+            });
             progressBar.setVisibility(View.INVISIBLE);
             statusIcon.setVisibility(View.VISIBLE);
             scrollView.setVisibility(View.VISIBLE);
@@ -74,7 +86,7 @@ public class ConnectActivity extends AppCompatActivity {
     }
 
     // Called when pressing the "ConnectActivity" button
-    public void connect(View view) {
+    public void connect() {
         if (app.getStatus() == PiApplication.Status.CONNECTING) {
             return;
         }
@@ -116,5 +128,9 @@ public class ConnectActivity extends AppCompatActivity {
         }
 
         app.connectToServer(host, port);
+    }
+
+    public void disconnect() {
+        app.disconnectFromServer();
     }
 }

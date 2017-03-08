@@ -11,4 +11,5 @@
     <string name="connection_status_port">Port: %1$d</string>
     <string name="connection_status_version">Host version: %1$s</string>
     <string name="edit_ip_wrong_format">The IP address must be of the form \"x.y.z.w\", where each part is a number from 0 to 255.</string>
+    <string name="button_ip_disconnect">Disconnect</string>
 </resources>

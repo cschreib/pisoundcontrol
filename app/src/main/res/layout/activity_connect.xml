@@ -11,15 +11,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="@string/edit_ip_prompt"
         android:inputType="text"
+        android:maxLines="1"
+        android:text="192.168.2.51:4444"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/buttonConnect"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="16dp"
-        android:maxLines="1" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
         android:id="@+id/buttonConnect"
@@ -27,7 +28,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:onClick="connect"
         android:text="@string/button_ip_connect"
         app:layout_constraintBaseline_toBaselineOf="@+id/editTextIP"
         app:layout_constraintLeft_toRightOf="@+id/editTextIP"
